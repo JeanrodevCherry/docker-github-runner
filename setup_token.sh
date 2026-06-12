@@ -2,6 +2,11 @@
 REPO_URL="https://github.com/JeanrodevCherry/CellProfilerPipeline"
 RUNNER_NAME="win-runner"
 
+read -p "Enter the repository URL (default: $REPO_URL): " input_repo
+if [ -n "$input_repo" ]; then
+    REPO_URL="$input_repo"
+fi
+
 read -p "Enter the path to the runner files: " RUNNER_PATH
 
 if [ ! -d "$RUNNER_PATH" ]; then
@@ -9,6 +14,7 @@ if [ ! -d "$RUNNER_PATH" ]; then
     echo "Please ensure the directory exists and is accessible."
     exit 1
 fi
+ 
 
 read -p "Enter your GitHub token: " TOKEN
 
@@ -16,6 +22,6 @@ echo "Configuring GitHub Actions runner..."
 echo "Runner path: $RUNNER_PATH"
 echo "Repository: $REPO_URL"
 
-
-echo LOCATION_TMP=$RUNNER_PATH > ./.env
+echo REPO_URL=$REPO_URL > ./.env
+echo LOCATION_TMP=$RUNNER_PATH >> ./.env
 echo GITHUB_RUNNER_TOKEN=$TOKEN >> ./.env

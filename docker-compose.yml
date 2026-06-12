@@ -10,4 +10,4 @@ services:
       - ${LOCATION_TMP}CellProfilerPipeline:/tmp/CellProfilerPipeline
       - ${LOCATION_TMP}action-runner-files:/actions-runner-files
     command: >
-      bash -c "./config.sh --url https://github.com/JeanrodevCherry/CellProfilerPipeline --token ${GITHUB_RUNNER_TOKEN} && ./run.sh"
+      bash -c "./config.sh --url $REPO_URL --token ${GITHUB_RUNNER_TOKEN} && ./run.sh"
