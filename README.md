@@ -29,10 +29,11 @@ docker compose up -d
 copy this in the ``.env`` file the following:
 
 ```.env
-REPO_URL=https://github.com/JeanrodevCherry/docker-github-runner
-LOCATION_TMP=/c/Users/jeanr/docker/
+REPO_URL=REPO_URL
+REPO_NAME=REPO_NAME
+LOCATION_TMP=LOCATION_ON_YOUR_MACHINE
 GITHUB_RUNNER_TOKEN=TOKEN
-RUNNER_NAME=github-runner
+RUNNER_NAME=RUNNER_NAME
 ```
 
 then execute ```docker compose up -d```

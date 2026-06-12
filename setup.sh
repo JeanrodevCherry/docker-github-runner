@@ -7,6 +7,8 @@ if [ -n "$input_repo" ]; then
     REPO_URL="$input_repo"
 fi
 
+REPO_NAME="$(basename "$REPO_URL")"
+
 read -p "Enter the path to the runner files: " RUNNER_PATH
 
 if [ ! -d "$RUNNER_PATH" ]; then
@@ -29,6 +31,7 @@ echo "Runner path: $RUNNER_PATH"
 echo "Repository: $REPO_URL"
 
 echo REPO_URL=$REPO_URL > ./.env
+echo REPO_NAME=$REPO_NAME >> ./.env
 echo LOCATION_TMP=$RUNNER_PATH >> ./.env
 echo GITHUB_RUNNER_TOKEN=$TOKEN >> ./.env
 echo RUNNER_NAME=$RUNNER_NAME >> ./.env

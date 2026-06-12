@@ -7,7 +7,7 @@ services:
       - .env
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
-      - ${LOCATION_TMP}CellProfilerPipeline:/tmp/CellProfilerPipeline
+      - ${LOCATION_TMP}${REPO_NAME}:/tmp/${REPO_NAME}
       - ${LOCATION_TMP}action-runner-files:/actions-runner-files
     command: >
       bash -c "./config.sh --url $REPO_URL --token ${GITHUB_RUNNER_TOKEN} && ./run.sh"
