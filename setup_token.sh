@@ -1,0 +1,21 @@
+#!/bin/bash
+REPO_URL="https://github.com/JeanrodevCherry/CellProfilerPipeline"
+RUNNER_NAME="win-runner"
+
+read -p "Enter the path to the runner files: " RUNNER_PATH
+
+if [ ! -d "$RUNNER_PATH" ]; then
+    echo "❌ ERROR: Path does not exist: $RUNNER_PATH"
+    echo "Please ensure the directory exists and is accessible."
+    exit 1
+fi
+
+read -p "Enter your GitHub token: " TOKEN
+
+echo "Configuring GitHub Actions runner..."
+echo "Runner path: $RUNNER_PATH"
+echo "Repository: $REPO_URL"
+
+
+echo LOCATION_TMP=$RUNNER_PATH > ./.env
+echo GITHUB_RUNNER_TOKEN=$TOKEN >> ./.env

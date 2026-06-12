@@ -1,0 +1,13 @@
+services:
+  github-runner-windows:
+    image:  myoung34/github-runner:latest 
+    container_name: github-runner
+    restart: unless-stopped
+    env_file:
+      - .env
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - ${LOCATION_TMP}CellProfilerPipeline:/tmp/CellProfilerPipeline
+      - ${LOCATION_TMP}action-runner-files:/actions-runner-files
+    command: >
+      bash -c "./config.sh --url https://github.com/JeanrodevCherry/CellProfilerPipeline --token ${GITHUB_RUNNER_TOKEN} && ./run.sh"
