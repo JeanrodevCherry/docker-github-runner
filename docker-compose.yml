@@ -1,7 +1,7 @@
 services:
   github-runner-windows:
-    image:  myoung34/github-runner:latest 
-    container_name: github-runner
+    image:  myoung34/github-runner:latest
+    container_name: ${RUNNER_CONTAINER_NAME:-github-runner} 
     restart: unless-stopped
     env_file:
       - .env
