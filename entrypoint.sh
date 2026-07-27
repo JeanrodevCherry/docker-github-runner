@@ -70,6 +70,17 @@ echo "REPO_URL=${REPO_URL}"
 
 _SHORT_URL="${REPO_URL}"
 
+# If the host docker socket is mounted, align the docker group GID inside the
+# container so the runner user can actually reach the daemon.
+if [[ -e /var/run/docker.sock ]]; then
+  _DOCKER_SOCK_GID=$(stat -c '%g' /var/run/docker.sock)
+  _CURRENT_DOCKER_GID=$(getent group docker | cut -d: -f3 2>/dev/null || echo "")
+  if [[ -n "${_DOCKER_SOCK_GID}" && "${_DOCKER_SOCK_GID}" != "${_CURRENT_DOCKER_GID}" ]]; then
+    echo "Adjusting docker group GID to match socket (${_DOCKER_SOCK_GID})"
+    groupmod -g "${_DOCKER_SOCK_GID}" docker 2>/dev/null || true
+  fi
+fi
+
 configure_runner
 
 echo "Starting runner..."
