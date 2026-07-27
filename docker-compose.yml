@@ -8,6 +8,7 @@ services:
       dockerfile: Dockerfile
     container_name: ${RUNNER_CONTAINER_NAME:-github-runner}
     restart: unless-stopped
+    privileged: true
     env_file:
       - .env
     volumes:

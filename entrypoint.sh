@@ -70,6 +70,16 @@ echo "REPO_URL=${REPO_URL}"
 
 _SHORT_URL="${REPO_URL}"
 
+# Start Docker daemon inside the container if requested (requires privileged: true)
+if [[ "${_START_DOCKER_SERVICE}" == "true" ]]; then
+  echo "Starting Docker daemon..."
+  dockerd &>/var/log/dockerd.log &
+  # Wait until the socket is ready
+  timeout 30 sh -c 'until docker info &>/dev/null; do sleep 1; done' \
+    || { echo "ERROR: dockerd failed to start"; cat /var/log/dockerd.log; exit 1; }
+  echo "Docker daemon is ready"
+fi
+
 # If the host docker socket is mounted, align the docker group GID inside the
 # container so the runner user can actually reach the daemon.
 if [[ -e /var/run/docker.sock ]]; then
