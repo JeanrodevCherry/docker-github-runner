@@ -2,10 +2,26 @@
 GH_RUNNER_VERSION=$1
 TARGETPLATFORM=$2
 
+_USERID="1001"
+_GROUPID="121"
+_DOCKER_GROUPID="500"
+# docker-group-id=500
 export TARGET_ARCH="x64"
 if [[ $TARGETPLATFORM == "linux/arm64" ]]; then
   export TARGET_ARCH="arm64"
 fi
+
+function setup_sudoers() {
+  sed -e 's/Defaults.*env_reset/Defaults env_keep = "HTTP_PROXY HTTPS_PROXY NO_PROXY FTP_PROXY http_proxy https_proxy no_proxy ftp_proxy"/' -i /etc/sudoers
+  echo '%sudo ALL=(ALL) NOPASSWD: ALL' >> /etc/sudoers
+}
+groupadd -g ${_DOCKER_GROUPID} docker
+setup_sudoers
+groupadd -g ${_GROUPID} runner
+useradd -mr -d /home/runner -u ${_USERID} -g ${_GROUPID} runner
+usermod -aG sudo runner
+usermod -aG docker runner
+
 curl -L "https://github.com/actions/runner/releases/download/v${GH_RUNNER_VERSION}/actions-runner-linux-${TARGET_ARCH}-${GH_RUNNER_VERSION}.tar.gz" > actions.tar.gz
 tar -zxf actions.tar.gz
 rm -f actions.tar.gz
