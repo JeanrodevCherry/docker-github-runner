@@ -25,8 +25,7 @@ function configure_docker() {
   echo "deb [arch=${DPKG_ARCH} signed-by=/etc/apt/keyrings/docker.gpg] https://download.docker.com/linux/$ID ${version} stable" \
     | tee /etc/apt/sources.list.d/docker.list > /dev/null
 }
-configure_docker
-apt-get update && apt-get install -y docker-ce docker-ce-cli containerd.io
+apt-get update && apt-get install -y docker.io
 
 function setup_sudoers() {
   sed -e 's/Defaults.*env_reset/Defaults env_keep = "HTTP_PROXY HTTPS_PROXY NO_PROXY FTP_PROXY http_proxy https_proxy no_proxy ftp_proxy"/' -i /etc/sudoers
