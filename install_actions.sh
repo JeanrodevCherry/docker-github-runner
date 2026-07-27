@@ -11,6 +11,22 @@ if [[ $TARGETPLATFORM == "linux/arm64" ]]; then
   export TARGET_ARCH="arm64"
 fi
 
+# install docker
+function configure_docker() {
+  # shellcheck source=/dev/null
+  source /etc/os-release
+
+  mkdir -p /etc/apt/keyrings
+  curl -fsSL "https://download.docker.com/linux/$ID/gpg" | gpg --dearmor -o /etc/apt/keyrings/docker.gpg
+
+  local version DPKG_ARCH
+  version=$(echo "$VERSION_CODENAME" | sed 's/trixie\|n\/a/bookworm/g')
+  DPKG_ARCH="$(dpkg --print-architecture)"
+  echo "deb [arch=${DPKG_ARCH} signed-by=/etc/apt/keyrings/docker.gpg] https://download.docker.com/linux/$ID ${version} stable" \
+    | tee /etc/apt/sources.list.d/docker.list > /dev/null
+}
+configure_docker
+
 function setup_sudoers() {
   sed -e 's/Defaults.*env_reset/Defaults env_keep = "HTTP_PROXY HTTPS_PROXY NO_PROXY FTP_PROXY http_proxy https_proxy no_proxy ftp_proxy"/' -i /etc/sudoers
   echo '%sudo ALL=(ALL) NOPASSWD: ALL' >> /etc/sudoers

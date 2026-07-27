@@ -1,3 +1,4 @@
+#!/bin/bash
 #Setup vars
 export RUNNER_ALLOW_RUNASROOT=1
 export PATH=${PATH}:/actions-runner
@@ -5,7 +6,7 @@ export PATH=${PATH}:/actions-runner
 # Un-export these, so that they must be passed explicitly to the environment of
 # any command that needs them.  This may help prevent leaks.
 export -n ACCESS_TOKEN
-export -n RUNNER_TOKEN
+export -n GITHUB_RUNNER_TOKEN
 export -n APP_ID
 export -n APP_PRIVATE_KEY
 
@@ -47,10 +48,10 @@ configure_runner() {
     echo "Disable adding the default self-hosted, platform, and architecture labels"
     ARGS+=("--no-default-labels")
   fi
-  echo "Configuring"
+  # echo "Configuring With ${_SHORT_URL} ${GITHUB_RUNNER_TOKEN} ${_RUNNER_NAME} ${_RUNNER_WORKDIR} ${_LABELS} ${_RUNNER_GROUP}"
   ./config.sh \
       --url "${_SHORT_URL}" \
-      --token "${RUNNER_TOKEN}" \
+      --token "${GITHUB_RUNNER_TOKEN}" \
       --name "${_RUNNER_NAME}" \
       --work "${_RUNNER_WORKDIR}" \
       --labels "${_LABELS}" \
@@ -60,3 +61,16 @@ configure_runner() {
       "${ARGS[@]}"
   [[ ! -d "${_RUNNER_WORKDIR}" ]] && mkdir -p "${_RUNNER_WORKDIR}"
 }
+
+echo "GITHUB_RUNNER_TOKEN=${GITHUB_RUNNER_TOKEN:+(set)}"
+echo "REPO_URL=${REPO_URL}"
+
+[[ -z "${GITHUB_RUNNER_TOKEN}" ]] && { echo "ERROR: RUNNER_TOKEN is not set"; exit 1; }
+[[ -z "${REPO_URL}" ]]     && { echo "ERROR: REPO_URL is not set";     exit 1; }
+
+_SHORT_URL="${REPO_URL}"
+
+configure_runner
+
+echo "Starting runner..."
+exec ./run.sh

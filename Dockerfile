@@ -16,7 +16,8 @@ RUN apt-get update && apt-get upgrade -y && apt-get install -y \
     curl \
     libssl3 \
     sudo \
-    docker-cli
+    docker-cli \
+    gpg
 
 #Install side
 COPY install_actions.sh /actions-runner
@@ -26,7 +27,6 @@ RUN chmod +x /actions-runner/install_actions.sh \
   && chown -R runner /_work /actions-runner 
 #/opt/hostedtoolcache
 
-#COPY entrypoint
 COPY entrypoint.sh /
 RUN chmod a+x /entrypoint.sh
 ENTRYPOINT ["/entrypoint.sh"]
