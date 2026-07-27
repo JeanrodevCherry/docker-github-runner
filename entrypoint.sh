@@ -23,7 +23,7 @@ _GITHUB_HOST="${_GITHUB_HOST#http://}"
 _GITHUB_HOST="${_GITHUB_HOST#https://}"
 _GITHUB_HOST="${_GITHUB_HOST%%/}"
 _RUN_AS_ROOT=${RUN_AS_ROOT:="true"}
-_START_DOCKER_SERVICE=${START_DOCKER_SERVICE:="false"}
+_START_DOCKER_SERVICE=${START_DOCKER_SERVICE:="true"}
 _UNSET_CONFIG_VARS=${UNSET_CONFIG_VARS:="false"}
 _CONFIGURED_ACTIONS_RUNNER_FILES_DIR=${CONFIGURED_ACTIONS_RUNNER_FILES_DIR:-""}
 
@@ -61,10 +61,6 @@ configure_runner() {
       "${ARGS[@]}"
   [[ ! -d "${_RUNNER_WORKDIR}" ]] && mkdir -p "${_RUNNER_WORKDIR}"
 }
-
-echo "GITHUB_RUNNER_TOKEN=${GITHUB_RUNNER_TOKEN:+(set)}"
-echo "REPO_URL=${REPO_URL}"
-
 [[ -z "${GITHUB_RUNNER_TOKEN}" ]] && { echo "ERROR: RUNNER_TOKEN is not set"; exit 1; }
 [[ -z "${REPO_URL}" ]]     && { echo "ERROR: REPO_URL is not set";     exit 1; }
 
@@ -73,9 +69,9 @@ _SHORT_URL="${REPO_URL}"
 # Start Docker daemon inside the container if requested (requires privileged: true)
 if [[ "${_START_DOCKER_SERVICE}" == "true" ]]; then
   echo "Starting Docker daemon..."
-  dockerd &>/var/log/dockerd.log &
+  dockerd >/var/log/dockerd.log 2>&1 &
   # Wait until the socket is ready
-  timeout 30 sh -c 'until docker info &>/dev/null; do sleep 1; done' \
+  timeout 30 sh -c 'until docker info >/dev/null 2>&1; do sleep 1; done' \
     || { echo "ERROR: dockerd failed to start"; cat /var/log/dockerd.log; exit 1; }
   echo "Docker daemon is ready"
 fi

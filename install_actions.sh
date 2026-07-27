@@ -4,7 +4,6 @@ TARGETPLATFORM=$2
 
 _USERID="1001"
 _GROUPID="121"
-_DOCKER_GROUPID="500"
 # docker-group-id=500
 export TARGET_ARCH="x64"
 if [[ $TARGETPLATFORM == "linux/arm64" ]]; then
@@ -31,10 +30,13 @@ function setup_sudoers() {
   sed -e 's/Defaults.*env_reset/Defaults env_keep = "HTTP_PROXY HTTPS_PROXY NO_PROXY FTP_PROXY http_proxy https_proxy no_proxy ftp_proxy"/' -i /etc/sudoers
   echo '%sudo ALL=(ALL) NOPASSWD: ALL' >> /etc/sudoers
 }
-groupadd -g ${_DOCKER_GROUPID} docker
+configure_docker
+_DOCKER_GID=$(getent group docker | awk -F: '{print $3}')
+echo "Docker group ID: ${_DOCKER_GROUPID}"
+# groupadd -g ${_DOCKER_GROUPID} docker
 setup_sudoers
-groupadd -g ${_GROUPID} runner
-useradd -mr -d /home/runner -u ${_USERID} -g ${_GROUPID} runner
+# groupadd -g ${_DOCKER_GID} runner
+useradd -mr -d /home/runner -u ${_USERID} -g ${_DOCKER_GID} runner
 usermod -aG sudo runner
 usermod -aG docker runner
 
