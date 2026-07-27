@@ -1,8 +1,14 @@
 services:
   github-runner-windows:
-    image:  myoung34/github-runner:latest
-    container_name: ${RUNNER_CONTAINER_NAME:-github-runner} 
+    # image: myoung34/github-runner:latest
+    # image: jeanrodev/github-actions-runner:dev
+    #image:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: ${RUNNER_CONTAINER_NAME:-github-runner}
     restart: unless-stopped
+    privileged: true
     env_file:
       - .env
     volumes:
