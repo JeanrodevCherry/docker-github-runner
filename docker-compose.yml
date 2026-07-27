@@ -1,8 +1,6 @@
 services:
   github-runner-windows:
-    # image: myoung34/github-runner:latest
-    # image: jeanrodev/github-actions-runner:dev
-    #image:
+    image: ghcr.io/jeanrodevcherry/docker-github-runner:main
     build:
       context: .
       dockerfile: Dockerfile
